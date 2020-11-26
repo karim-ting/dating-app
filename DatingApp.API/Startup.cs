@@ -34,12 +34,12 @@ namespace DatingApp.API
 
         public void ConfigureDevelopmentServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(x => 
+            services.AddDbContext<DataContext>(x =>
            {
                x.UseLazyLoadingProxies();
-                x.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+               x.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
 
-           } 
+           }
            );
 
             ConfigureServices(services);
@@ -47,12 +47,12 @@ namespace DatingApp.API
 
         public void ConfigureProductionServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(x => 
+            services.AddDbContext<DataContext>(x =>
            {
                x.UseLazyLoadingProxies();
-                x.UseMySql(Configuration.GetConnectionString("DefaultConnection"));
+               x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
 
-           } 
+           }
            );
 
             ConfigureServices(services);
@@ -95,24 +95,25 @@ namespace DatingApp.API
             }
             else
             {
-                app.UseExceptionHandler(builder =>
-                {
-                    builder.Run(async context =>
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                // app.UseExceptionHandler(builder =>
+                // {
+                //     builder.Run(async context =>
+                //     {
+                //         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                        var error = context.Features.Get<IExceptionHandlerFeature>();
+                //         var error = context.Features.Get<IExceptionHandlerFeature>();
 
-                        if (error != null)
-                        {
-                            context.Response.AddApplicationError(error.Error.Message);
-                            await context.Response.WriteAsync(error.Error.Message);
-                        }
-                    });
-                });
+                //         if (error != null)
+                //         {
+                //             context.Response.AddApplicationError(error.Error.Message);
+                //             await context.Response.WriteAsync(error.Error.Message);
+                //         }
+                //     });
+                // });
             }
 
-            // app.UseHttpsRedirection();
+            app.UseDeveloperExceptionPage();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseAuthentication();
